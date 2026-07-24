@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', ()=>{
-    const API_URL = 'http://10.55.89.124:5000/api/auth';
+    const API_URL = 'http://10.59.58.72:5000/api/auth';
 
     //Logica para el boton "comenzar"
     const btComenzar = document.getElementById('btn-comenzar');
@@ -89,5 +89,68 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 alert('No se pudo conectar con el servidor backend');
             }
         });
+    }
+
+    // Logica para la pagina Cuenta.html
+    const accountContainer = document.getElementById('account-content');
+    if (accountContainer) {
+        const usuarioStorage = localStorage.getItem('viales_user');
+
+        if (usuarioStorage) {
+            const usuario = JSON.parse(usuarioStorage);
+            //Sin no se envio el rol, por defecto 'usuario'
+            const rolUser = usuario.rol || 'usuario';
+            const esAdmin = rolUser === 'admin';
+
+            accountContainer.innerHTML = `
+                <div class="account-info">
+                    <div class="account-field">
+                        <span class="account-label">Nombre</span>
+                        <span class="account-value">${usuario.nombre || 'sin nombre'}</span>
+                    </div>
+
+                    <div class="account-field">
+                        <span class="account-label">Correo</span>
+                        <span class="account-value">${usuario.correo || 'sin correo'}</span>
+                    </div>
+
+                    <div class="account-field">
+                        <span class="account-label">Usuario</span>
+                        <span class="role-badge ${esAdmin ? 'admin' : 'user'}">
+                            ${esAdmin ? 'Administrador' : 'usuario Ciudadano'}
+                        </span>
+                    </div>
+                </div>
+
+                ${esAdmin ? `
+                    <div style="background-color: #fff5f5; border: 1px dashed #feb2b2; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; color: #c53030;">
+                        Eres admin
+                    </div>
+                ` : ''}
+
+                <button id="btn-logout" class="btn-auth-submit" style="background-color: #e74c3c;">
+                    Cerrar Sesion
+                </button>
+            `;
+            
+            //Boton de cerrar sesion
+            document.getElementById('btn-logout').addEventListener('click', ()=>{
+                localStorage.removeItem('viales_token');
+                localStorage.removeItem('viales_user');
+                alert('Sesion cerrada correctamente');
+                window.location.href = 'comienzo.html';
+            });
+        }
+        else{
+            //Si no esta logueado
+            accountContainer.innerHTML = `
+                <p style="color: #7f8c8d; margin-bottom: 20px;">
+                    No has iniciado sesion
+                </p>
+                <a href="inicio_sesion.html" class="btn-auth-submit" style="display: block; text-decoration: none; text-align: center;">
+                    Iniciar sesion
+                </a>
+            `;
+        }
     }
 });
