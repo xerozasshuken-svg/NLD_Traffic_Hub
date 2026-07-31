@@ -342,6 +342,277 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
+/* ==========================================
+   ESTILOS DE PANEL_REPORTES
+   ========================================== */
+
+/*ANULAR EL CENTRADO DE BODY*/
+body.panel-body{
+    display: block !important;
+    min-height: 100vh;
+    background-color: #fBfafc;
+}
+
+/*Banner superior*/
+.top-banner{
+    background-color: #0f172a;
+    color: white;
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+}
+.banner-logo{
+    font-size: 18x;
+    font-weight: 700;
+}
+.banner-user-btn{
+    background-color: #334155;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.banner-user-btn:hover{
+    background-color: #475569;
+}
+
+/*Encabezados y cotenedor*/
+.hub-conntainer{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 80px 20px;
+}
+.hub-tittle{
+    font-size: 28px;
+    font-weight: 0 auto;
+    color: #0f172a;
+    margin-bottom: 16px;
+}
+
+.news-card{
+    background: linear-gradient(135deg, #1e293b, #334155);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.news-card h3{
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+.news-card p{
+    font-size: 14px;
+    color: #cbd5e1
+}
+/*Botones de filtro y tarjetas*/
+.filters-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.btn-filter{
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    opacity: 0.85;
+    transition: all 0.2s;
+}
+.btn-filter:hover, .btn-filter.active{
+    opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.reports-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310, 1fr));
+    gap: 22px;
+}
+
+.report-card{
+    background-color: white;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+.report-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-wrapper{
+    width: 100%;
+    height: 170px;
+    background-color: #e2e8f0;
+    position: relative;
+}
+.card-img-wrapper img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.card-badge{
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+
+}
+
+/*SEARCH AND FILTERs (Barra de busqueda*/
+.search-and-filters{
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.search-box input{
+    width: 100%;
+    padding: 12px 18px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 14.5px;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+.search-box input:focus{
+    border-color: #3B82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* CATEGORIAS ESPECIFICAS*/
+.cat-todos{ background-color: #334155; color: white;}
+.cat-accidente{ background-color: #ef4444; color: white;}
+.cat-trafico{background-color: #f97316; color: white;}
+.cat-cerrada{background-color: #a855f7; color: white}
+.cat-inundacion{background-color: #06b6d4; color: white;}
+.cat-obra{background-color: #eab308; color:  #1e293b;}
+
+/*Boton flotante (+ PUBLICAR REPORTE)*/
+.btn-floating-create{
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+    cursor: pointer;
+    z-index: 99;
+    transition: transform 0.2s, background-color 0.2s;
+}
+.btn-floating-create:hover{
+    transform: scale(1.05);
+    background-color: #1d4ed8;
+}
+
+/*VENTANA EMERGENTE AL CREAR REPORTE*/
+.modal-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+.modal-content{
+    background-color: white;
+    width: 90%;
+    max-width: 520px;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+.modal-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.modal-header h2{
+    font-size: 20px;
+    color: #1e293b;
+}
+.btn-close-modal{
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    color: #94a3b8;
+    cursor: pointer;
+}
+/*Seleccionador de categoria dentro del modal*/
+.category-selector{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 6px;
+}
+.cat-radio{
+    background-color: #f1f5f9;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+/*Acciones dentro del modal*/
+.modal-actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+.btn-cancel{
+    background-color: #e2eBF0;
+    color: #475569;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn-submit-report {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 
 /* RESPONSIVO MÓVIL PARA LOGIN */
 @media (max-width: 480px) {

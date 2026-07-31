@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', ()=>{
-    const API_URL = 'http://10.59.58.72:5000/api/auth';
+    const API_URL = 'http://192.168.1.89:5000/api/auth';
 
     //Logica para el boton "comenzar"
     const btComenzar = document.getElementById('btn-comenzar');
