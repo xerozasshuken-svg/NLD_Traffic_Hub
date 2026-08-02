@@ -1,25 +1,29 @@
 const pool = require('../db');
-const { report } = require('../routes/authRoutes');
 
 //  Crear un nuevo reporte vial
 const crearReporte = async (req, res) => {
      // "usuario_id" viene desde el token gracias al middleware
-    const usuario_id = req.usuario.id
-    const {tipo, ubicacion, descripcion, imagen_url} = req.body;
+    const usuario_id = req.usuario.id ? req.usuario.id : null;
+
+    const {categoria, ubicacion, descripcion, imagen_url, estado} = req.body;
+
+    const estadoReporte = estado || 'aprobado';
 
     try{
         const nuevoReporte = await pool.query(
-            'INSERT INTO reportes (usuario_id, tipo, ubicacion, descripcion, imagen_url) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [usuario_id, tipo, ubicacion, descripcion, imagen_url]
+            `INSERT INTO reportes (usuario_id, categoria, ubicacion, descripcion, imagen_url, estado, fecha_creacion)
+            VALUES ($1, $2, $3, $4, $5, $6, NOW())
+            RETURNING *`,
+            [usuario_id, categoria, ubicacion, descripcion, imagen_url, estadoReporte]
         );
 
         res.status(201).json({
-            mensaje: 'Reporte vial creado con exito',
+            mensaje: 'Reporte creado con exito',
             reporte: nuevoReporte.rows[0]
         });
     } 
     catch (err) {
-        console.error(err.message);
+        console.error("Error al insertar el reporte en PostgreSQL", err.message);
         res.status(500).send('Error en el servidor al crear el reporte');
     }    
 };
@@ -30,13 +34,17 @@ const obtenerTodosLosReportes = async (req, res) =>{
 
     try{
         const reportes = await pool.query(
-            'SELECT r.*, u.nombre AS creador_por FROM reportes r INNER JOIN usuarios u ON r.usuario_id = u.id ORDER BY r.fecha DESC'
+            `SELECT r.*,
+                COALESCE(u.nombre, 'Ciudadano') AS creado_por
+            FROM reportes r
+            LEFT JOIN usuarios u ON r.usuario_id = u.id
+            ORDER BY r.fecha_creacion DESC`
         );
         
         res.json(reportes.rows);
     }
     catch (err) {
-        console.error(err.message);
+        console.error("Error al obtener reportes:", err.message);
         res.status(500).send('Error en el servidor al obtener los reportes');
     }
 };

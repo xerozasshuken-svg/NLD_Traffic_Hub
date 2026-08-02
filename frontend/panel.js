@@ -115,43 +115,59 @@ async function cargarReportes(){
 async function guardarNuevoReporte(e) {
     e.preventDefault();
 
+    const token = localStorage.getItem('viales_token'); 
+    if (!token) {
+        alert("Debes iniciar sesion para publicar un reporte");
+        return;
+    }
     const categoria = formNuevoReporte.querySelector('input[name="categoria"]:checked')?.value || 'Tráfico';
-    const ubicacion = document.getElementById('rep-ubicacion')?.value.trim() || 'Sin ubicacion';
+    const ubicacion = document.getElementById('rep-ubicacion')?.value.trim() || 'Sin ubicación';
     const descripcion = document.getElementById('rep-descripcion')?.value.trim() || '';
 
     let imagenFinal = 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80';
     
-    if (modoImagen === 'url' && inputImgUrl.value.trim() !== '') {
+    if (modoImagen === 'url' && inputImgUrl && inputImgUrl.value.trim() !== '') {
         imagenFinal = inputImgUrl.value.trim();
     }
-    else if (modoImagen === 'file' && inputImgFile.files.length > 0){
-        imagenFinal = await convertirImagenABase64(inputImgFile.files[0]);
+    else if (modoImagen === 'file' && inputImgFile.files && inputImgFile.files[0]){
+        try {
+            imagenFinal = await convertirImagenABase64(inputImgFile.files[0]);    
+        }
+        catch (err) {
+            console.error("Error al procesar la image seleccionada", err);
+        }
+        
     }
 
     const nuevoReporte = {
-        id: Date.now(),
         categoria,
         ubicacion,
         descripcion,
         imagen_url: imagenFinal,
-        fecha: new Date().toISOString(),
         estado: 'aprobado' //Temporal apra pruebas
     };
 
     try {
         const res = await fetch('/api/reportes', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${token}`
+            },
             body: JSON.stringify(nuevoReporte)
         });
         
         if (res.ok) {
-            const reporteCreado = await res.json();
-            reportesList.unshift(reporteCreado);
+            const data = await res.json();
+            const reporteGuardado = data.reporte || data;
+
+            reportesList.unshift(reporteGuardado);
             cerrarModal();
             filtrarYRenderizar();
-        }else{
-            alert('Ocurrio un problema al guardar elñ reporte en el servidor');
+        }else if ( res.status === 401){
+            alert('Tu sesion ha expirado o no tiene permiso. Por favor vuelve a iniciar sesion.');
+        }else {
+            alert('Ocurrio un problema al guardar el reporte en el servidor');
         }
     }
     catch (error) {
@@ -160,12 +176,12 @@ async function guardarNuevoReporte(e) {
     }
 }
 //Auxiliar para converit archivos locales de imagen
-function convertirImagenABase64(){
+function convertirImagenABase64(archivo){
     return new Promise((resolve, reject) =>{
         const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader, result);
-        reader.onerror = error => reject(error);
+        reader.readAsDataURL(archivo);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
     });
 }
 //Filtrado y Renderizado en pantalla
@@ -180,7 +196,7 @@ function filtrarYRenderizar(){
         return coincideCategoria && coindiceTexto;
     });
 
-    filtrados.sort((a,b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
+    filtrados.sort((a,b) => new Date(b.fecha_creacion || b.fechaCreacion) - new Date(a.fecha_creacion || a.fechaCreacion));
     renderizarTarjetas(filtrados);
 }
 
@@ -199,7 +215,10 @@ function renderizarTarjetas(lista = []){
 
     lista.forEach(rep =>{
         const claseBadge = obtenerClaseCategoria(rep.categoria);
-        const fechaFormateada = rep.fechaCreacion ? new Date(rep.fechaCreacion).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : 'Reciente';
+        const fechaRaw = rep.fecha_creacion || rep.fechaCreacion;
+        const fechaFormateada = fechaRaw
+                ? new Date(fechaRaw).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) 
+                : (rep.fecha || 'Reciente');
 
         const cardHTML = `
             <article class="report-card">
@@ -214,7 +233,7 @@ function renderizarTarjetas(lista = []){
                         ${rep.ubicacion}
                     </h3>
                     <p class="card-location">
-                        ${rep.ubicacion} • ${rep.fecha || 'Reciente'}
+                        Publicado: ${fechaFormateada}
                     </p>
                     <p class="card-desc">
                         ${rep.descripcion}
