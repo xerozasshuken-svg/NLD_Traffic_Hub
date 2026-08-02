@@ -6,7 +6,7 @@
     <title>NLD Traffic Hub - Panel Principal</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body style="display: block; background-color: #f8fafc;">
+<body class="panel-body">
 
     <!-- BANNER SUPERIOR -->
     <header class="top-banner">
@@ -17,14 +17,10 @@
     <main class="hub-container">
         
         <!-- ENCABEZADO Y TITULO -->
-        <div class="hub-header">
-            <h1 class="hub-title">NLD Traffic Hub</h1>
-        </div>
-
-        <!-- TARJETA NOTICIAS / SUBTÍTULO -->
         <div class="news-card">
+            <h1>NLD Traffic Hub</h1>
             <h3>Avisos y Noticias</h3>
-            <p>Monitoreo de incidentes urbanos y reportes ciudadanos en tiempo real en Nuevo Laredo.</p>
+            <p>Monnitoreo de incidentes urbanos y reportes ciudadanos en tiempo real</p>
         </div>
 
         <!-- BARRA DE BÚSQUEDA Y FILTROS -->
@@ -38,9 +34,9 @@
             <div class="filters-wrapper">
                 <button class="btn-filter cat-todos active" data-cat="Todos">Todos</button>
                 <button class="btn-filter cat-accidente" data-cat="Accidente">Accidente</button>
-                <button class="btn-filter cat-trafico" data-cat="Tráfico">Tráfico</button>
+                <button class="btn-filter cat-trafico" data-cat="Trafico">Tráfico</button>
                 <button class="btn-filter cat-cerrada" data-cat="Calle cerrada">Calle cerrada</button>
-                <button class="btn-filter cat-inundacion" data-cat="Inundación">Inundación</button>
+                <button class="btn-filter cat-inundacion" data-cat="Inundacion">Inundación</button>
                 <button class="btn-filter cat-obra" data-cat="Obra vial">Obra vial</button>
             </div>
         </div>
@@ -48,7 +44,7 @@
         <!-- CONTENEDOR DE REPORTES (FEED DE TARJETAS) -->
         <div class="reports-grid" id="reports-container">
             <!-- Aquí se renderizarán dinámicamente las tarjetas creadas -->
-            <p style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px;">Cargando reportes viales en tiempo real...</p>
+            <p class="loading-text">Cargando reportes viales en tiempo real...</p>
         </div>
 
     </main>
@@ -67,38 +63,60 @@
             </div>
             
             <form id="form-nuevo-reporte">
-                <!-- Paso 1: Selección de Categoría -->
-                <div class="form-group">
-                    <label>¿Qué está pasando?</label>
-                    <div class="category-selector">
-                        <label class="cat-radio"><input type="radio" name="categoria" value="Accidente" required>Accidente</label>
-                        <label class="cat-radio"><input type="radio" name="categoria" value="Tráfico">Tráfico</label>
-                        <label class="cat-radio"><input type="radio" name="categoria" value="Calle cerrada">Calle cerrada</label>
-                        <label class="cat-radio"><input type="radio" name="categoria" value="Inundación">Inundación</label>
-                        <label class="cat-radio"><input type="radio" name="categoria" value="Obra vial">Obra vial</label>
+                <div class="form-grid-layout">
+
+                    <!-- Lado IZQUIERDO -->
+                    <div class="form-col-left">
+                        <div class="form-group">
+                            <label>¿Qué está pasando?</label>
+                            <div class="category-selector">
+                                <label class="cat-radio"><input type="radio" name="categoria" value="Accidente" required>Accidente</label>
+                                <label class="cat-radio"><input type="radio" name="categoria" value="Tráfico">Tráfico</label>
+                                <label class="cat-radio"><input type="radio" name="categoria" value="Calle cerrada">Calle cerrada</label>
+                                <label class="cat-radio"><input type="radio" name="categoria" value="Inundación">Inundación</label>
+                                <label class="cat-radio"><input type="radio" name="categoria" value="Obra vial">Obra vial</label>
+                            </div>
+                        </div>
+
+                        <!-- Ubicación -->
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label for="rep-ubicacion">Ubicación exacta</label>
+                            <input type="text" id="rep-ubicacion" placeholder="Ej: Av. Reforma" required>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Paso 2: Ubicación -->
-                <div class="form-group">
-                    <label for="rep-ubicacion">Ubicación exacta</label>
-                    <input type="text" id="rep-ubicacion" placeholder="Ej: Av. Reforma" required>
-                </div>
+                    <!-- Lado DERECHO-->
+                    <div class="form-col-right">
 
-                <!-- Paso 3: Detalles -->
-                <div class="form-group">
-                    <label for="rep-descripcion">Detalles / Descripción</label>
-                    <textarea id="rep-descripcion" rows="3" placeholder="Da más contexto (carriles bloqueados, tiempo de espera, etc.)" required></textarea>
-                </div>
+                        <div class="form-group">
+                            <label for="rep-descripcion">Detalles / Descripción</label>
+                            <textarea id="rep-descripcion" placeholder="Da más contexto (carriles bloqueados, tiempo de espera, etc.)" required></textarea>
+                        </div>
 
-                <!-- Paso 4: Evidencia Fotográfica (URL/Archivo) -->
-                <div class="form-group">
-                    <label for="rep-imagen">Enlace de Foto (Opcional)</label>
-                    <input type="url" id="rep-imagen" placeholder="https://ejemplo.com/foto.jpg">
-                </div>
+                        <!-- Evidencia fotografica (URL/Archivo) -->
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label>Evidencia Fotografica</label>
+                            <div class="img-input-options">
+                                <button type="button" class="btn-toggle-img active" id="btnn-mode-file">
+                                    Subir Archivo
+                                </button>
+                                <button type="button" class="btn-toggle-img" id="btnn-mode-url">
+                                    Usar Enlace
+                                </button>
+                            </div>
+                            <!--Archivo local -->
+                            <input type="file" id="rep-imagen-file" accept="image/*">
+                            <!--URL -->
+                            <input type="url" id="rep-imagen-url" placeholder="https://ejemplo.com/foto.jpg" style="display: none;">
+                        </div>
+                    </div>
 
-                <!-- Paso 5: Botones de Acción -->
-                <div class="modal-actions">
+                </div>
+                    
+                    
+
+                <!-- Botones de Acción -->
+                <div class="modal-actions" style="margin-top: 20px;">
                     <button type="button" class="btn-cancel" id="btn-cancelar-modal">Cancelar</button>
                     <button type="submit" class="btn-submit-report">Publicar reporte</button>
                 </div>

@@ -137,6 +137,7 @@ body {
     transform: scale(0.99);
 }
 
+/* BOTÓNES INFERIORES (CUENTA/ACERCA DE) */
 /* BOTÓN INFERIOR IZQUIERDO (ACERCA DE) */
 .btn-about {
     position: absolute;
@@ -146,13 +147,17 @@ body {
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
-    transition: color 0.2s;
+    transition: all 0.2s;
     padding: 5px 10px;
     border-radius: 6px;
+    background-color: white;
+    border: 1px solid #e2e9f0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 .btn-about:hover {
     color: #2c3e50;
-    background-color: rgba(0,0,0,0.04);
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
 }
 /* BOTÓN INFERIOR DERECHA (CUENTA) */
 .btn-account{
@@ -266,32 +271,68 @@ body {
 .form-group {
     margin-bottom: 20px;
 }
-
+/*Estilos para textarea e inputs en formulario*/
 .form-group label {
     display: block;
     font-size: 14px;
     font-weight: 600;
-    color: #34495e;
+    color: #1e293b;
     margin-bottom: 8px;
 }
 
-.form-group input {
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group input[type="file"],
+.form-group textarea {
     width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #e2e8f0;
+    padding: 12px 14px;
+    border: 1.5px solid #e2e8f0;
     border-radius: 10px;
-    font-size: 15px;
-    background-color: #fafbfc;
+    font-family: inherit;
+    font-size: 14px;
+    color: #334155;
+    background-color: #f8fafc;
     transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+.form-group textarea{
+    resize: vertical;
+    min-height: 110px;
+}
+.form-group input:focus,
+.form-group textarea:focus {
     outline: none;
+    border-color: #2563eb;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+/*Layout en 2 columnas para formulario*/
+.form-grid-layout{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24pcx;
+    margin-top: 15px;
 }
 
-.form-group input:focus {
-    border-color: #3498db;
-    background-color: white;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+.img-input-options{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
 }
 
+.btn-toggle-img{
+    background: #e2e8f0;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.btn-toggle-img.active{
+    background: #2563eb;
+    color: white;
+}
 .btn-auth-submit {
     width: 100%;
     background-color: #2c3e50;
@@ -385,33 +426,44 @@ body.panel-body{
 }
 
 /*Encabezados y cotenedor*/
-.hub-conntainer{
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 24px 20px 80px 20px;
+.hub-container{
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px 80px 20px;
 }
 .hub-tittle{
     font-size: 28px;
-    font-weight: 0 auto;
+    font-weight: 800;
     color: #0f172a;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    text-align: left;
 }
+
 
 .news-card{
     background: linear-gradient(135deg, #1e293b, #334155);
     color: white;
-    padding: 20px;
-    border-radius: 12px;
+    padding: 24px 30px;
+    border-radius: 16px;
     margin-bottom: 24px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+}
+.news-card h1{
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: #ffffff;
 }
 .news-card h3{
-    font-size: 18px;
-    margin-bottom: 6px;
+    font-size: 16px;
+    color: #ff2945;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 .news-card p{
-    font-size: 14px;
-    color: #cbd5e1
+    font-size: 14.5px;
+    color: #cbd5e1;
 }
 /*Botones de filtro y tarjetas*/
 .filters-wrapper{
@@ -440,7 +492,6 @@ body.panel-body{
     grid-template-columns: repeat(auto-fill, minmax(310, 1fr));
     gap: 22px;
 }
-
 .report-card{
     background-color: white;
     border-radius: 14px;
@@ -453,6 +504,13 @@ body.panel-body{
 .report-card:hover{
     transform: translateY(-4px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+#reports-feed p{
+    text-align: center;
+    padding: 60px 0;
+    color: #64748b;
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .card-img-wrapper{
@@ -475,7 +533,25 @@ body.panel-body{
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-
+}
+.card-body{
+  padding: 16px;  
+}
+.card-title{
+    font-size: 16.5px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #0f172a;
+}
+.card-location{
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 10px;
+}
+.card-desc{
+    font-size: 13.5px;
+    color: #334155;
+    line-height: 1.4;
 }
 
 /*SEARCH AND FILTERs (Barra de busqueda*/
@@ -508,26 +584,33 @@ body.panel-body{
 .cat-inundacion{background-color: #06b6d4; color: white;}
 .cat-obra{background-color: #eab308; color:  #1e293b;}
 
+/*Cotenedor de reportes*/
+.loading-text{
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #64748b;
+    padding: 60px 0;
+    font-weight: 500;
+}
 /*Boton flotante (+ PUBLICAR REPORTE)*/
 .btn-floating-create{
     position: fixed;
     bottom: 30px;
     right: 30px;
-    background-color: #2563eb;
+    background-color: #1e293b;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
     color: white;
     border: none;
     padding: 14px 22px;
     border-radius: 30px;
     font-size: 15px;
     font-weight: 700;
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
     cursor: pointer;
     z-index: 99;
-    transition: transform 0.2s, background-color 0.2s;
+    transition: transform 0.2s;
 }
 .btn-floating-create:hover{
     transform: scale(1.05);
-    background-color: #1d4ed8;
 }
 
 /*VENTANA EMERGENTE AL CREAR REPORTE*/
@@ -545,12 +628,14 @@ body.panel-body{
     z-index: 200;
 }
 .modal-content{
-    background-color: white;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius:20px;
     width: 90%;
-    max-width: 520px;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-width: 820px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    max-height: 90vh;
+    overflow-y: auto;
 }
 .modal-header{
     display: flex;
@@ -613,7 +698,6 @@ body.panel-body{
     cursor: pointer;
 }
 
-
 /* RESPONSIVO MÓVIL PARA LOGIN */
 @media (max-width: 480px) {
     .auth-card {
@@ -656,5 +740,10 @@ body.panel-body{
         margin-right: 20px;
         display: inline-block;
         float: right;
+    }
+}
+@media (max-width: 768px) {
+    .form-grid-layout{
+        grid-template-columns: 1fr;
     }
 }
