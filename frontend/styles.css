@@ -583,6 +583,17 @@ body.panel-body{
 .cat-cerrada{background-color: #a855f7; color: white}
 .cat-inundacion{background-color: #06b6d4; color: white;}
 .cat-obra{background-color: #eab308; color:  #1e293b;}
+/*BOTON PENDIENTES EN PANEL_REPORTES*/
+.btn-filter.cat-admin{
+    background-color: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fdba74;
+}
+.btn-filter.cat-admin.active{
+    background-color: #ea580c !important;
+    color: #ffffff !important;
+    border-color: #ea580c !important;
+}
 
 /*Cotenedor de reportes*/
 .loading-text{

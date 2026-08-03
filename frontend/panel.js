@@ -22,6 +22,7 @@ const inputImgFile = document.getElementById('rep-imagen-file');
 const inputImgUrl= document.getElementById('rep-imagen-url');
 //Inicializador
 document.addEventListener('DOMContentLoaded', ()=>{
+    evaluarrFiltros();
     cargarReportes();
     configurarEventos();
 });
@@ -134,7 +135,7 @@ async function guardarNuevoReporte(e) {
             imagenFinal = await convertirImagenABase64(inputImgFile.files[0]);    
         }
         catch (err) {
-            console.error("Error al procesar la image seleccionada", err);
+            console.error("Error al procesar la imagen seleccionada", err);
         }
         
     }
@@ -144,7 +145,7 @@ async function guardarNuevoReporte(e) {
         ubicacion,
         descripcion,
         imagen_url: imagenFinal,
-        estado: 'pendiente' //Temporal apra pruebas
+        estado: 'pendiente' 
     };
 
     try {
@@ -184,6 +185,16 @@ function convertirImagenABase64(archivo){
         reader.onerror = (error) => reject(error);
     });
 }
+//Revelar filtro de pendientes si es Admin
+function evaluarrFiltros(){
+    const usuarioActual = JSON.parse(localStorage.getItem('viales_user') || '{}');
+    const btnPendientes = document.getElementById('btn-filtro-pendientes');
+
+    if (usuarioActual && usuarioActual.rol === 'admin' && btnPendientes) {
+        btnPendientes.style.display = 'inline-block';
+    }
+}
+
 //Filtrado y Renderizado en pantalla
 function filtrarYRenderizar(){
     const query = inputBusqueda ? normalizarTexto(inputBusqueda.value) : '';
@@ -191,9 +202,23 @@ function filtrarYRenderizar(){
 
     let filtrados = reportesList.filter(rep =>{
         const catReporteNorm = normalizarTexto(rep.categoria);
+        const estadoReporte = (rep.estado || 'pendiente').toLowerCase();
 
-        //Compara e ignora tildes/mayusculas
-        const coincideCategoria = categoriaActual === 'Todos' ||  catReporteNorm === catFiltradoNorm;
+        //Logica de filtrado de estado
+        let coincideCategoria = false;
+
+        if (categoriaActual === 'Pendientes') {
+            //Muestra reportes que no estan aprobados}
+            coincideCategoria = estadoReporte !== 'aprobado';
+        }
+        else if (categoriaActual === 'Todos') {
+            //Para las pestañas noprmales se muestra los aprobados
+            coincideCategoria = estadoReporte === 'aprobado';
+        }
+        else{
+            //Filtrado por categoria especifica
+            coincideCategoria = (catReporteNorm === catFiltradoNorm) && (estadoReporte === 'aprobado');
+        }
         
         const ubicacionNorm = normalizarTexto(rep.ubicacion);
         const descripcionNorm = normalizarTexto(rep.descripcion);
@@ -256,8 +281,7 @@ function renderizarTarjetas(lista = []){
 function obtenerClaseCategoria(cat){
     if(!cat) return 'cat-todos';
 
-    //Convertir a minuscuilas y quitar tildes
-    const normalizado = cat.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const normalizado = normalizarTexto(cat);
 
     switch(normalizado){
         case 'accidente': return 'cat-accidente';

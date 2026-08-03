@@ -3,11 +3,28 @@ const pool = require('../db');
 //  Crear un nuevo reporte vial
 const crearReporte = async (req, res) => {
      // "usuario_id" viene desde el token gracias al middleware
-    const usuario_id = req.usuario.id ? req.usuario.id : null;
+    const usuario_id = req.usuario && req.usuario.id ? req.usuario.id : null;
 
     const {categoria, ubicacion, descripcion, imagen_url, estado} = req.body;
 
-    const estadoReporte = estado || 'aprobado';
+    //Mapeo seguro
+    const mapaCategorias = {
+        'accidente': 'Accidente',
+        'trafico': 'Tráfico',
+        'calle cerrada': 'Calle cerrada',
+        'inundacion': 'Inundación',
+        'obra vial': 'Obra vial'
+    };
+
+    //Convertimos a minusculas y quitamos para normalizar
+    const catLimpia = (categoria || '')
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+    const categoriaFinal = mapaCategorias[catLimpia] || categoria;
+    
+    const estadoReporte = estado ? estado : 'pendiente';
 
     try{
         const nuevoReporte = await pool.query(
@@ -23,8 +40,11 @@ const crearReporte = async (req, res) => {
         });
     } 
     catch (err) {
-        console.error("Error al insertar el reporte en PostgreSQL", err.message);
-        res.status(500).send('Error en el servidor al crear el reporte');
+        console.error("Error al insertar el reporte en PostgreSQL", err);
+        res.status(500).json({
+            mensaje: 'Error en el servidor al crear el reporte',
+            detalle: err.message
+        });
     }    
 };
 
@@ -83,7 +103,7 @@ const aprobarReporte = async (req,res) =>{
             "UPDATE reportes SET estado = 'aprobado' WHERE id = $1 RETURNING *",
             [id]
         );
-        if (resultado.rows.length === [0]) {
+        if (resultado.rows.length === 0) {
             return res.status(404).json({ mensaje: 'Reporte no encontrado'});
         }
         res.json({ mensaje: 'Rerpote aprobado con exito', reporte: resultado.rows[0] });
@@ -96,7 +116,7 @@ const aprobarReporte = async (req,res) =>{
 
 //Cambiar el estado del reporte a rechazado
 const rechazarReporte = async (req, res) =>{
-    const{id} = req.Params;
+    const{id} = req.params;
     try {
         const resultado = await pool.query(
             "UPDATE reportes SET estado = 'rechazado' WHERE id = $1 RETURNING *",
