@@ -49,7 +49,91 @@ const obtenerTodosLosReportes = async (req, res) =>{
     }
 };
 
+const obtenerReportesPorId = async (req, res) =>{
+    const { id } = req.params;
+
+    try {
+        const resultado = await pool.query(
+            `SELECT r.*,
+                COALESCE(u.nombre, 'Ciudadano') AS creado_por,
+                u.correo AS correo_usuario
+            FROM reportes r
+            LEFT JOIN usuarios u ON r.usuario_id = u.id
+            WHERE r.id = $1`,
+            [id]
+        );
+
+        if (resultado.rows.length === 0) {
+            return res.status(404).json({mensaje: 'Reporte o encontrado'});
+        }
+
+        res.json(resultado.rows[0]);
+    }
+    catch (err) {
+        console.error("Error al obtener el reporte: ", err.message);
+        res.status(500).send('Error en el servidor al obteer el reporte');
+    }
+};
+
+//Cambiar el estado del reporte a aprobado
+const aprobarReporte = async (req,res) =>{
+    const { id } = req.params;
+    try {
+        const resultado = await pool.query(
+            "UPDATE reportes SET estado = 'aprobado' WHERE id = $1 RETURNING *",
+            [id]
+        );
+        if (resultado.rows.length === [0]) {
+            return res.status(404).json({ mensaje: 'Reporte no encontrado'});
+        }
+        res.json({ mensaje: 'Rerpote aprobado con exito', reporte: resultado.rows[0] });
+    }
+    catch (err) {
+        console.error("Error al aprobar reporte: ", err.message);
+        res.status(500).send('Error en el servidor al aprobar reporte');
+    }
+};
+
+//Cambiar el estado del reporte a rechazado
+const rechazarReporte = async (req, res) =>{
+    const{id} = req.Params;
+    try {
+        const resultado = await pool.query(
+            "UPDATE reportes SET estado = 'rechazado' WHERE id = $1 RETURNING *",
+            [id] 
+        );
+        if (resultado.rows.length === 0) {
+            return res.status(404).json({ mensaje: 'Reporte no encotnrado'});
+        }
+        res.json({ mensaje: 'Reporte rechazado con exito', reporte: resultado.rows[0] });
+    } catch (err) {
+        console.error("Error al rechazar reporte:", err.message);
+        res.status(500).send('Error en el servidor al rechazar reporte');
+    }
+};
+
+//Eliminar el reporte permanentemente
+const eliminarReporte = async (req, res) =>{
+    const { id } = req.params;
+    try {
+        const resultado = await pool.query("DELETE FROM reportes WHERE id = $1 RETURNING *", [id]);
+        if(resultado.rows.length === 0){
+            return res.status(404).json({mensaje: 'Reporte no encontrado'});
+        }
+        res.json({mensaje: 'Reporte eliminado con exito'});
+    }
+    catch (err) {
+        console.error("Error al eliminar reporte:", err.message);
+        res.status(500).send('Error en el servidor al eliminar reporte');
+    }
+};
+
 module.exports = {
     crearReporte,
-    obtenerTodosLosReportes
+    obtenerTodosLosReportes,
+    obtenerReportesPorId,
+    aprobarReporte,
+    rechazarReporte,
+    eliminarReporte
+
 };

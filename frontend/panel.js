@@ -144,7 +144,7 @@ async function guardarNuevoReporte(e) {
         ubicacion,
         descripcion,
         imagen_url: imagenFinal,
-        estado: 'aprobado' //Temporal apra pruebas
+        estado: 'pendiente' //Temporal apra pruebas
     };
 
     try {
@@ -186,14 +186,21 @@ function convertirImagenABase64(archivo){
 }
 //Filtrado y Renderizado en pantalla
 function filtrarYRenderizar(){
-    const query = inputBusqueda ? inputBusqueda.value.toLowerCase().trim() : '';
+    const query = inputBusqueda ? normalizarTexto(inputBusqueda.value) : '';
+    const catFiltradoNorm = normalizarTexto(categoriaActual);
 
     let filtrados = reportesList.filter(rep =>{
-        const coincideCategoria = categoriaActual === 'Todos' || rep.categoria === categoriaActual;
-        const coindiceTexto = (rep.ubicacion && rep.ubicacion.toLowerCase().includes(query)) ||
-                               (rep.descripcion && rep.descripcion.toLowerCase().includes(query)); 
+        const catReporteNorm = normalizarTexto(rep.categoria);
+
+        //Compara e ignora tildes/mayusculas
+        const coincideCategoria = categoriaActual === 'Todos' ||  catReporteNorm === catFiltradoNorm;
         
-        return coincideCategoria && coindiceTexto;
+        const ubicacionNorm = normalizarTexto(rep.ubicacion);
+        const descripcionNorm = normalizarTexto(rep.descripcion);
+
+        const coincideTexto = ubicacionNorm.includes(query) || descripcionNorm.includes(query);
+
+        return coincideCategoria && coincideTexto;
     });
 
     filtrados.sort((a,b) => new Date(b.fecha_creacion || b.fechaCreacion) - new Date(a.fecha_creacion || a.fechaCreacion));
@@ -221,7 +228,7 @@ function renderizarTarjetas(lista = []){
                 : (rep.fecha || 'Reciente');
 
         const cardHTML = `
-            <article class="report-card">
+            <article class="report-card" onclick="window.location.href='mostrar_reporte.html?id=${rep.id}'">
                 <div class="card-img-wrapper">
                     <img src="${rep.imagen_url}" alt="${rep.categoria}" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80'">
                     <span class="card-badge ${claseBadge}">
@@ -247,14 +254,28 @@ function renderizarTarjetas(lista = []){
 }
 
 function obtenerClaseCategoria(cat){
-    switch(cat){
-        case 'Accidente': return 'cat-accidente';
-        case 'Trafico': return 'cat-trafico';
-        case 'Calle cerrada': return 'cat-cerrada';
-        case 'Inundacion': return 'cat-inundacion';
-        case 'Obra vial': return 'cat-obra';
+    if(!cat) return 'cat-todos';
+
+    //Convertir a minuscuilas y quitar tildes
+    const normalizado = cat.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    switch(normalizado){
+        case 'accidente': return 'cat-accidente';
+        case 'trafico': return 'cat-trafico';
+        case 'calle cerrada': return 'cat-cerrada';
+        case 'inundacion': return 'cat-inundacion';
+        case 'obra vial': return 'cat-obra';
         default: return 'cat-todos';
     }
+}
+
+//AUXILAR
+function normalizarTexto(texto = ''){
+    return texto
+        .toString()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
 }
 
 //Funcion de prueba
@@ -287,11 +308,3 @@ function usarReportesDemo(){
  ];
  filtrarYRenderizar();
 }
-
-
-
-
-
-
-
-

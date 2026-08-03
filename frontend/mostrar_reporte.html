@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Reporte - NLD Traffic Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        
+    </style>
+</head>
+<body class="panel-body" style="background-color: #f4eeeeed;">
+
+    <!-- Banner Superior -->
+    <header class="top-banner">
+        <a href="panel_reportes.html" class="banner-user-btn" style="border-radius: 8px;">← Volver al Panel</a>
+        <a href="cuenta.html" class="banner-user-btn" style="border-radius: 8px;">Mi Cuenta</a>
+    </header>
+
+    <!-- Contenedor Principal -->
+    <main class="hub-container">
+
+        <!-- Disposición en 2 columnas -->
+        <div class="report-detail-layout">
+            
+            <!-- COLUMNA IZQUIERDA: Categoria e Imagen -->
+            <div class="detail-left-col">
+                <div>
+                    <span id="det-categoria" class="badge-large cat-todos">Cargando...</span>
+                </div>
+                <div class="detail-image-wrapper">
+                    <img id="det-imagen" src="" alt="Imagen del reporte" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80'">
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: Datos del Reporte -->
+            <div class="detail-right-col">
+                <section class="info-panel">
+                    <h2 id="det-ubicacion" style="margin-top: 0; color: #0f172a; font-size: 20px; font-weight: 700;">📍 Cargando ubicación...</h2>
+                    <p id="det-fecha" style="color: #64748b; font-size: 13px; margin-top: 4px;">Publicado: --</p>
+                    <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 16px 0;">
+                    <h3 style="font-size: 15px; color: #1e293b; margin-bottom: 8px;">Descripción del incidente</h3>
+                    <p id="det-descripcion" style="line-height: 1.5; color: #475569; font-size: 14px;">Cargando detalles...</p>
+                </section>
+
+                <section class="user-panel">
+                    <span style="font-size: 1.6rem;">👤</span>
+                    <div>
+                        <strong style="display: block; color: #0f172a; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Reportado por:</strong>
+                        <span id="det-usuario" style="color: #334155; font-size: 15px; font-weight: 600;">Cargando...</span>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+
+        <!-- PANEL DE ADMINISTRACIÓN INFERIOR (Separado y coincidiendo con el ancho) -->
+        <section id="admin-panel" class="admin-controls-panel">
+            <h3 style="margin-top:0; color: #c2410c; font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                Panel Administrativo
+            </h3>
+            <p style="color: #475569; margin-bottom: 6px; font-size: 14px;"><strong>Estado del reporte:</strong> <span id="det-estado">Cargando...</span></p>
+            <p style="color: #475569; font-size: 14px;"><strong>ID del Usuario creador:</strong> <span id="det-usuario-id">--</span></p>
+            
+            <div id="admin-actions-container" style="margin-top: 18px; display: flex; gap: 10px;">
+                <!-- Botones de acción del administrador -->
+            </div>
+        </section>
+
+    </main>
+
+    <script src="mostrar_reporte.js"></script>
+</body>
+</html>

@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', ()=>{
     const API_URL = '/api/auth';
-    //http://localhost:5000
 
     //Logica para el boton "comenzar"
     const btComenzar = document.getElementById('btn-comenzar');
